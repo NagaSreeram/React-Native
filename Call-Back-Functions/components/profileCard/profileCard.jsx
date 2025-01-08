@@ -4,18 +4,25 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
 
-export function ProfileCard({onPressTitle}) {
+export function ProfileCard({ onPressTitle, firstName, lastName, age }) {
+  function onClickTitle() {
+    onPressTitle(firstName + " " + lastName);
+  }
+
   return (
     <View style={[s.shadowProp, s.container]}>
       <View style={[s.header]}>
         <View>
-          <Image style={s.avatar} source={{ uri: "https://i.pravatar.cc/300" }} />
+          <Image
+            style={s.avatar}
+            source={{ uri: "https://i.pravatar.cc/300" }}
+          />
         </View>
         <View style={s.text}>
-        <TouchableOpacity onPress={onPressTitle}>
-        <Text style={s.name}>Naga Sreeram</Text>
-        </TouchableOpacity>
-         
+          <TouchableOpacity onPress={onClickTitle}>
+            <Text style={s.name}>Naga Sreeram</Text>
+          </TouchableOpacity>
+
           <Text>I'm a React Native Developer</Text>
         </View>
       </View>

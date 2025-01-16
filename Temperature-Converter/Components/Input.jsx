@@ -6,7 +6,7 @@ export function Input({ defaultValue, onChange, unit }) {
     <View style={InputBar.root}>
       <TextInput
         style={InputBar.input}
-        maxLength={3}
+        maxLength={4}
         placeholder="Type you temperature"
         defaultValue={defaultValue.toString()}
         onChangeText={(text) => {

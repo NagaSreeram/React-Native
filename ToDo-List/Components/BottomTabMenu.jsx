@@ -1,7 +1,19 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { TabMenuStyle } from "../StyleSheets/BottomTabMenuJSS.style";
 
-export function FooterTab({ selectedTabName, onPress }) {
+export function FooterTab({ selectedTabName, onPress, toDoList }) {
+  const getCountByStatus = toDoList.reduce(
+    (acc, todo) => {
+      todo.isComplete ? acc.done++ : acc.inProgress++;
+      return acc;
+    },
+    {
+      all: toDoList.length,
+      inProgress: 0,
+      done: 0,
+    }
+  );
+
   function getTextStyle(tabName) {
     return {
       fontWeight: "bold",
@@ -12,13 +24,15 @@ export function FooterTab({ selectedTabName, onPress }) {
   return (
     <View style={TabMenuStyle.buttons}>
       <TouchableOpacity onPress={() => onPress("all")}>
-        <Text style={getTextStyle("all")}>All</Text>
+        <Text style={getTextStyle("all")}>All ({getCountByStatus.all})</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => onPress("inProgress")}>
-        <Text style={getTextStyle("inProgress")}>In Progress</Text>
+        <Text style={getTextStyle("inProgress")}>
+          In Progress ({getCountByStatus.inProgress})
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => onPress("done")}>
-        <Text style={getTextStyle("done")}>Done</Text>
+        <Text style={getTextStyle("done")}>Done ({getCountByStatus.done})</Text>
       </TouchableOpacity>
     </View>
   );

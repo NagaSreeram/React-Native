@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { AppStyles } from './StyleSheets/AppJSS.style';
 import React, { useState } from 'react';
@@ -59,10 +59,33 @@ const [toDoList, setToDoList] = useState([
 
 const [selectedTabName, setSelectedTabName] = useState("all");
 
+function getFilteredList(){
+  switch(selectedTabName){
+    case "all":
+      return toDoList;
+      case "inProgress":
+        return toDoList.filter((todo)=> !todo.isCompleted);
+        case "done":
+          return toDoList.filter((todo)=> todo.isCompleted);
+          default:
+            return []
+  }
+}
+
+function deleteToDoTask(todoToDelete: any){
+  Alert.alert("DELETE TO-DO","Are you sure ?",[
+    {text:"Delete", style:"destructive", onPress:()=>{
+      console.log("Delete this todo", todoToDelete)
+      setToDoList(toDoList.filter(t => t.id !== todoToDelete.id))
+    }},
+    {text:"Cancle", style:"cancel"},
+  ])
+}
+
 function renderToDoList(){
-  return toDoList.map((todo)=> 
+  return getFilteredList().map((todo)=> 
   <View key={todo.id} style={AppStyles.card}>
-    <CardForToDo onPress={updateToDO} todo={todo}/>
+    <CardForToDo onLongPress={deleteToDoTask} onPress={updateToDO} todo={todo}/>
   </View>)
 }
 
@@ -88,7 +111,7 @@ function updateToDO(todo: any) {
         <View style={AppStyles.body}><ScrollView>{renderToDoList()}</ScrollView></View>
       </SafeAreaView>
     </SafeAreaProvider>
-    <View style={AppStyles.footer}><FooterTab onPress={setSelectedTabName} selectedTabName={selectedTabName}/></View>
+    <View style={AppStyles.footer}><FooterTab toDoList={toDoList} onPress={setSelectedTabName} selectedTabName={selectedTabName}/></View>
     </>
   );
 }

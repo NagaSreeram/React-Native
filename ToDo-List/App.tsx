@@ -6,58 +6,65 @@ import React, { useState } from 'react';
 import { Header } from './Components/Header';
 import { CardForToDo } from './Components/CardToDo';
 import { FooterTab } from './Components/BottomTabMenu';
+import { AddButtonForToDo } from './Components/AddButton';
+import Dialog from "react-native-dialog";
+import uuid from "react-native-uuid"
 
 export default function App() {
 
 const [toDoList, setToDoList] = useState([
   {
-    id:1,
+    id:"1",
     title:"Declare PPF before 27th Jan",
     isCompleted:false
   },
   {
-    id:2,
+    id:"2",
     title:"Need to but M2 macbook air",
     isCompleted:false
   },
   {
-    id:3,
+    id:"3",
     title:"Need to declare proofs for tax",
     isCompleted:false
   },
   {
-    id:4,
+    id:"4",
     title:"Declare PPF before 27th Jan",
     isCompleted:false
   },
   {
-    id:5,
+    id:"5",
     title:"Need to but M2 macbook air",
     isCompleted:false
   },
   {
-    id:6,
+    id:"6",
     title:"Need to declare proofs for tax",
     isCompleted:false
   },
   {
-    id:7,
+    id:"7",
     title:"Declare PPF before 27th Jan",
     isCompleted:false
   },
   {
-    id:8,
+    id:"8",
     title:"Need to but M2 macbook air",
     isCompleted:false
   },
   {
-    id:9,
+    id:"9",
     title:"Need to declare proofs for tax",
     isCompleted:false
   }
 ]);
 
 const [selectedTabName, setSelectedTabName] = useState("all");
+
+const [showAddDialog, setShowAddDialog] = useState(false);
+
+const[inputTextFromAddDialogBox, setInputFromAddDialogBox] = useState("");
 
 function getFilteredList(){
   switch(selectedTabName){
@@ -103,15 +110,40 @@ function updateToDO(todo: any) {
 
 }
 
+function addToDoViaButton(){
+  const newToDo = {
+    id:uuid.v4(),
+    title: inputTextFromAddDialogBox,
+    isCompleted: false,
+  };
+  setToDoList([...toDoList, newToDo]);
+}
+
+function renderAddDialog(){
+  return (
+    <Dialog.Container visible={showAddDialog} onBackdropPress={() => setShowAddDialog(false)}>
+      <Dialog.Title>Add ToDo</Dialog.Title>
+      <Dialog.Description>
+       Add a task for today 
+      </Dialog.Description>
+      <Dialog.Input onChangeText={(text)=>setInputFromAddDialogBox(text)} placeholder='Ex: Go to the dentist'/>
+      <Dialog.Button label="Cancel" color="grey" onPress={() => setShowAddDialog(false)}/>
+      <Dialog.Button label="Save" color="#2F76C5" onPress={addToDoViaButton}/>
+    </Dialog.Container>
+  );
+}
+
   return (
     <>
     <SafeAreaProvider>
       <SafeAreaView style={AppStyles.root}>
         <View style={AppStyles.header}><Header /></View>
         <View style={AppStyles.body}><ScrollView>{renderToDoList()}</ScrollView></View>
+        <AddButtonForToDo onPress={()=>setShowAddDialog(true)}/>
       </SafeAreaView>
     </SafeAreaProvider>
     <View style={AppStyles.footer}><FooterTab toDoList={toDoList} onPress={setSelectedTabName} selectedTabName={selectedTabName}/></View>
+    {renderAddDialog()}
     </>
   );
 }
